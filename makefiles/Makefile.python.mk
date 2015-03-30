@@ -215,7 +215,7 @@ else
 	cp lib$S_pywrapgraph.$(DYNAMIC_SWIG_LIB_SUFFIX) temp$Sor-tools.$(PORT)$Sortools$Sgraph
 	cp lib$S_pywrapknapsack_solver.$(DYNAMIC_SWIG_LIB_SUFFIX) temp$Sor-tools.$(PORT)$Sortools$Salgorithms
 	$(SED) -i -e 's/\.dll/\.so/' temp/or-tools.$(PORT)/setup.py
-	-rm temp/or-tools.$(PORT)/setup.py-e
+	-rm -f temp/or-tools.$(PORT)/setup.py-e
 	cd temp/or-tools.$(PORT) && tar -C ../.. -c -v --exclude *svn* --exclude *roadef* data | tar xvm
 	cd temp && tar cvzf ../Google.OrTools.python.$(PORT).$(GIT_REVISION).tar.gz or-tools.$(PORT)
 endif
@@ -284,7 +284,7 @@ else
 	$(SED) -i -e 's/DELETEWIN //g' temp/ortools/setup.py
 	$(SED) -i -e '/DELETEUNIX/d' temp/ortools/setup.py
 	$(SED) -i -e 's/DLL/$(DYNAMIC_LIB_SUFFIX)/g' temp/ortools/setup.py
-	-rm temp/ortools/setup.py-e
+	-rm -f temp/ortools/setup.py-e
 ifeq ($(PLATFORM),MACOSX)
 	tools/fix_python_libraries_on_mac.sh
 endif
