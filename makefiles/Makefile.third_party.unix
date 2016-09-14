@@ -1,11 +1,12 @@
 # SVN tags of dependencies to checkout.
 
 GFLAGS_TAG = 2.1.2
-PROTOBUF_TAG = 2.6.0
+PROTOBUF_TAG = 2.6.1
+GTEST_TAG = 1.5.0
 # 0.4.0
 GOOGLE_APPUTILS_TAG = 14
 # 2.0.2
-SPARSEHASH_TAG = 116
+SPARSEHASH_TAG = 2.0.3
 CBC_TAG = 2.9.2
 SWIG_TAG = 3.0.5
 # version 8.33
@@ -259,20 +260,23 @@ dependencies/install/bin/protoc: dependencies/sources/protobuf-$(PROTOBUF_TAG)/M
 dependencies/sources/protobuf-$(PROTOBUF_TAG)/Makefile: dependencies/sources/protobuf-$(PROTOBUF_TAG)/configure $(ACLOCAL_TARGET)
 	cd dependencies/sources/protobuf-$(PROTOBUF_TAG) && $(SET_PATH) ./configure --prefix=$(OR_ROOT_FULL)/dependencies/install --with-pic
 
-dependencies/sources/protobuf-$(PROTOBUF_TAG)/configure: dependencies/sources/protobuf-$(PROTOBUF_TAG)/autogen.sh $(ACLOCAL_TARGET)
+dependencies/sources/protobuf-$(PROTOBUF_TAG)/configure: dependencies/sources/protobuf-$(PROTOBUF_TAG)/autogen.sh $(ACLOCAL_TARGET) dependencies/sources/protobuf-$(PROTOBUF_TAG)/gtest
 	cd dependencies/sources/protobuf-$(PROTOBUF_TAG) && $(SET_PATH) ./autogen.sh
+
+dependencies/sources/protobuf-$(PROTOBUF_TAG)/gtest:
+	cd dependencies/sources/protobuf-$(PROTOBUF_TAG) && curl -L https://github.com/google/googletest/archive/release-$(GTEST_TAG).tar.gz | tar zx && mv googletest-release-$(GTEST_TAG) gtest
 
 dependencies/sources/protobuf-$(PROTOBUF_TAG)/autogen.sh: dependencies/archives/protobuf-$(PROTOBUF_TAG).tar.gz
 	cd dependencies/sources && tar xvzmf ../archives/protobuf-$(PROTOBUF_TAG).tar.gz
 
 dependencies/archives/protobuf-$(PROTOBUF_TAG).tar.gz:
-	cd dependencies/archives && curl -OL https://protobuf.googlecode.com/svn/rc/protobuf-$(PROTOBUF_TAG).tar.gz
+	cd dependencies/archives && curl -L -o protobuf-$(PROTOBUF_TAG).tar.gz https://github.com/google/protobuf/archive/v$(PROTOBUF_TAG).tar.gz
 
 # Intall Google Apputils Python.
 install_google_apputils: dependencies/sources/google_apputils_python-$(GOOGLE_APPUTILS_TAG)/README
 
 dependencies/sources/google_apputils_python-$(GOOGLE_APPUTILS_TAG)/README:
-	svn co http://google-apputils-python.googlecode.com/svn/trunk/ -r $(GOOGLE_APPUTILS_TAG) dependencies/sources/google_apputils_python-$(GOOGLE_APPUTILS_TAG)
+	git clone https://github.com/google/google-apputils dependencies/sources/google_apputils_python-$(GOOGLE_APPUTILS_TAG)
 
 # Install sparsehash.
 install_sparsehash: dependencies/install/include/google/dense_hash_map
@@ -287,8 +291,8 @@ dependencies/sources/sparsehash-$(SPARSEHASH_TAG)/configure: dependencies/source
 	cd dependencies/sources/sparsehash-$(SPARSEHASH_TAG) && $(SET_PATH) ./autogen.sh
 
 dependencies/sources/sparsehash-$(SPARSEHASH_TAG)/autogen.sh:
-	svn co http://sparsehash.googlecode.com/svn/trunk/ -r $(SPARSEHASH_TAG) dependencies/sources/sparsehash-$(SPARSEHASH_TAG)
-	cd dependencies/sources/sparsehash-$(SPARSEHASH_TAG) && patch -p0 -i ../../archives/sparsehash.patch
+	cd dependencies/sources && curl -L https://github.com/sparsehash/sparsehash/archive/sparsehash-$(SPARSEHASH_TAG).tar.gz | tar zx && mv sparsehash-sparsehash-$(SPARSEHASH_TAG) sparsehash-$(SPARSEHASH_TAG)
+#	cd dependencies/sources/sparsehash-$(SPARSEHASH_TAG) && patch -p0 -i ../../archives/sparsehash.patch
 
 # Install Coin CBC.
 install_cbc: dependencies/install/bin/cbc
